@@ -42,7 +42,7 @@ export const getCalories = async (
         const totalCalories = caloriesPerServing * servings;
 
         res.json({
-            dish_name,
+            dish_name: best.description,
             servings,
             calories_per_serving: Math.round(caloriesPerServing),
             total_calories: Math.round(totalCalories),
