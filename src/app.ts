@@ -6,6 +6,9 @@ import calRoutes from "./routes/calories.routes";
 dotenv.config();
 
 const app: Application = express();
+// Trust proxy (needed when behind a reverse proxy like Render)
+app.set("trust proxy", 1);
+
 app.use(express.json());
 
 app.use("/auth", authRoutes);
