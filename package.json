@@ -2,10 +2,10 @@
     "name": "meal-calorie-count-generator",
     "version": "1.0.0",
     "description": "",
-    "main": "app.js",
+    "main": "dist/app.js",
     "scripts": {
-        "build": "tsc",
-        "start": "npm run build && node -r dist/app.js",
+        "build": "npm install && tsc",
+        "start": "node dist/app.js",
         "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
         "test": "jest",
         "test:coverage": "jest --coverage"
