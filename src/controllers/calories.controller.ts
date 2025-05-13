@@ -10,7 +10,14 @@ export const getCalories = async (
 ) => {
     try {
         const validatedData = getCaloriesSchema.parse(req.body);
-        const { dish_name, servings } = validatedData;
+        const { dish_name: rawName, servings } = validatedData;
+
+        const dish_name = sanitizeDishName(rawName);
+        if (!dish_name) {
+            return res
+                .status(400)
+                .json({ error: "Invalid dish name after sanitization" });
+        }
 
         const foods = await searchFood(dish_name);
 
@@ -51,3 +58,7 @@ export const getCalories = async (
         next(error);
     }
 };
+
+function sanitizeDishName(raw: string): string {
+    return raw.replace(/[^\w\s]/g, "").replace(/\s+/g, " ");
+}
