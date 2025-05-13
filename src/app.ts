@@ -11,6 +11,10 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/", calRoutes);
 
+app.get("/health", (req: Request, res: Response) => {
+    res.status(200).json({ status: "OK" });
+});
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
