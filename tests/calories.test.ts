@@ -1,6 +1,5 @@
 import supertest from "supertest";
 import app from "../src/app";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { userRepository } from "../src/repositories/user.repository";
 import jwt from "jsonwebtoken";
