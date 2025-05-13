@@ -7,20 +7,26 @@ import { MongoError } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function register(
-    req: Request,``
+export const register = async (
+    req: Request,
     res: Response,
     next: NextFunction
-) {
+) => {
     try {
         const validatedData = registerSchema.parse(req.body);
-        await userRepository.save({
+        const user = await userRepository.save({
             firstName: validatedData.firstName,
             lastName: validatedData.lastName,
             email: validatedData.email,
             password: validatedData.password,
         });
-        res.status(201).json({ message: "User registered successfully" });
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
+            expiresIn: "1h",
+        });
+        return res
+            .status(201)
+            .json({ message: "User registered successfully", token });
     } catch (error: unknown) {
         if (error instanceof MongoError && error.code === 11000) {
             return res.status(400).json({ error: "Email already in use" });
@@ -33,9 +39,13 @@ export async function register(
         }
         next(error);
     }
-}
+};
 
-export async function login(req: Request, res: Response, next: NextFunction) {
+export const login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { email, password } = registerSchema
             .pick({ email: true, password: true })
@@ -50,7 +60,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
             expiresIn: "1h",
         });
-        res.json({ token });
+        return res.json({ token });
     } catch (error: unknown) {
         if (error instanceof ZodError) {
             return res.status(400).json({
@@ -60,4 +70,4 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         }
         next(error);
     }
-}
+};
