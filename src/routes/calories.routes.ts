@@ -16,13 +16,15 @@ const caloriesLimiter = rateLimit({
     },
 });
 
-const cache = apicache.middleware;
+const cacheInstance = apicache.options({
+    appendKey: (req) => JSON.stringify(req.body),
+}).middleware;
 
 router.post(
     "/get-calories",
     verifyToken as RequestHandler,
     caloriesLimiter,
-    cache("1 minutes"),
+    cacheInstance("1 minutes"),
     getCalories as RequestHandler
 );
 export default router;
